@@ -14,7 +14,7 @@ MAIN PROC FAR
  
         MOV AH,06 ;Request scroll
         MOV AL,00 ;Scroll one line
-        MOV BH,0F0H ;REVERSE ATTRIBUTES
+        MOV BH,074H ;REVERSE ATTRIBUTES
         MOV CX,0514H ;From row 5, column 20  through
         MOV DX,143CH ; row 20, column 60  (window)
         INT 10H

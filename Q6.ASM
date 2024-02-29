@@ -1,0 +1,41 @@
+    .MODEL SMALL
+    .STACK 64
+;-------------------------------------------
+    .DATA
+LEN DB 50
+STRING DB 51 DUP (?)
+;-------------------------------------------
+    .CODE
+MAIN PROC FAR
+	MOV AX, @DATA
+	MOV DS, AX	
+	MOV AH, 0AH
+	MOV DX, OFFSET LEN
+	INT 21H	
+	MOV CL, LEN[1]
+	MOV BX, 00H	
+	MOV AH, 02H
+	MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H	
+	DISPLAY:
+	MOV AH, 02H
+	MOV AL, STRING[BX]
+	CMP AL, ' '
+	JE NEWWORD
+	MOV DL, AL
+	INT 21H
+	JMP CONTINUE	
+	NEWWORD:
+	MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H	
+	CONTINUE:
+	INC BX
+	LOOP DISPLAY	
+	MOV AX, 4C00H
+	INT 21H	
+MAIN ENDP
+END MAIN

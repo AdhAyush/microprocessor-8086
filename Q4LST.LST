@@ -1,0 +1,84 @@
+Microsoft (R) Macro Assembler Version 5.00                  2/28/24 16:15:41
+READPRINT[EXE]                                              Page     1-1
+
+
+				TITLE READPRINT[EXE] 
+				;----------------------------------- 
+				        .MODEL SMALL 
+ 0020				        .STACK 32 
+ 0000				        .DATA 
+ 0000  000A[			STRING DB 10 DUP('$') 
+	   24			
+			 ]	
+				
+ 000A  0A 24			NEWLINE DB 0AH, '$' 
+				 
+				;------------------------------------ 
+ 0000				        .CODE 
+ 0000				MAIN PROC FAR 
+ 0000  B8 ---- R		        MOV AX, @DATA 
+ 0003  8E D8			        MOV DS, AX 
+ 0005  B9 0005			        MOV CX, 5 
+ 0008  BB 0000			        MOV BX,00 
+				         
+ 000B  B4 01			NEXT1:  MOV AH, 01H 
+ 000D  CD 21			        INT 21H 
+ 000F  88 87 0000 R		        MOV STRING[BX], AL 
+ 0013  43			        INC BX 
+ 0014  E2 F5			        LOOP NEXT1 
+				 
+ 0016  8D 16 000A R		        LEA DX, NEWLINE 
+ 001A  B4 09			        MOV AH, 09H 
+ 001C  CD 21			        INT 21H 
+				 
+ 001E  B9 0005			        MOV CX, 5 
+ 0021  BB 0000			        MOV BX, 00H 
+ 0024  8A 97 0000 R		NEXT2:  MOV DL, STRING[BX] 
+ 0028  B4 02			        MOV AH, 02H 
+ 002A  CD 21			        INT 21H 
+ 002C  43			        INC BX 
+ 002D  E2 F5			        LOOP NEXT2 
+				 
+ 002F  B8 4C00			        MOV AX, 4C00H 
+ 0032  CD 21			        INT 21H 
+ 0034				MAIN ENDP 
+ 0034				      END MAIN 
+Microsoft (R) Macro Assembler Version 5.00                  2/28/24 16:15:41
+READPRINT[EXE]                                              Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	000C	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0020	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	0034	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	_TEXT	Length = 0034
+
+NEWLINE  . . . . . . . . . . . .  	L BYTE	000A	_DATA
+NEXT1  . . . . . . . . . . . . .  	L NEAR	000B	_TEXT
+NEXT2  . . . . . . . . . . . . .  	L NEAR	0024	_TEXT
+
+STRING . . . . . . . . . . . . .  	L BYTE	0000	_DATA	Length = 000A
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  Q4		
+
+
+     38 Source  Lines
+     38 Total   Lines
+     19 Symbols
+
+  51022 + 465522 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
