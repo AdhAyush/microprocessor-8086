@@ -1,0 +1,49 @@
+    .MODEL
+    .STACK 32
+    .DATA
+MAX DB 101
+ACT DB ?
+STRING DB 101 DUP('$')
+NEWLINE DB 0DH, 0AH, '$'
+
+    .CODE 
+MAIN PROC FAR
+    MOV AX, @DATA 
+    MOV DS, AX
+
+    MOV AH, 0AH
+    LEA DX, MAX
+    INT 21H
+
+    MOV AH, 09H
+    LEA DX, NEWLINE
+    INT 21H
+
+    MOV AH, 00H
+    MOV AL, ACT
+
+; INTO DECIMAL FORMAT
+    MOV CX, 10
+    MOV BX, 00H
+
+DECIMAL: MOV DX, 00h
+    DIV CX 
+    ADD DX, 30H
+    push DX
+    INC BX
+    CMP AX, 0
+    JNZ DECIMAL
+
+;PRINTING DECIMAL
+    MOV AH, 02H
+    MOV CX, BX
+
+PRINT: POP DX
+    INT 21H
+    LOOP PRINT
+
+    MOV AH, 4CH
+    INT 21H
+
+MAIN ENDP
+    END MAIN

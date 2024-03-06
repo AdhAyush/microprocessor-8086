@@ -3,52 +3,61 @@ TITLE
     .MODEL SMALL
     .STACK 32
     .DATA
-ASK DB "ENTER THE NUMBER (N): $"
-RESULT DB "THE SUM OF NUMBERS FROM 1 TO N IS: $"
-RES DW 00H 
-NEWLINE DB 0AH, '$'
+ NUM DB 0
+
 ;---------------------------
     .CODE
-
+MAIN PROC FAR
     MOV AX,@DATA
     MOV DS,AX
 
-    MOV AH,01
+UP:  MOV AH,01
     INT 21H
-    SUB AL,30H ;ASCII TO DIGIT
-    MOV CX, AX
+    CMP AL, 0DH
+    JE DOWN
+    SUB AL, 30H
+    PUSH AX
+    MOV AL, 10
+    MUL NUM
+    POP AX
+    ADD NUM, AL
+    JMP UP
 
-    MOV BL 02
-SUM: MOV AL, BL
-    MUL AL
-    AAM
-    MUL 02H
-    AAM
-    ADD RES, AX
-    DAA
-    INC BL
-    LOOP SUM
+    MOV AL, 01
 
-MOV CX,04
-MOV AL,RES
-MOV AH,0
-MOV BX,0
-;Find each decimal digit of the number and store in stack
+ DOWN: MOV CL, NUM
+    MOV CH, 00H
+    MOV BX, 00h
+    MOV DL, 02
+    MOV DH, 02H
+MUL_LOOP:  MOV AL, DL
+    MUL DL
+    MUL DH
 
-L4: MOV DX,0
-DIV CX ;Divide by 10
-ADD DX,30H ;Convert the digit to characters
-PUSH DX ;Store the decimal digit in the stack
+    ADD BX, AX
+    INC DL
+    LOOP MUL_LOOP
 
-INC BX
-CMP AX,0 ;Stop if the number is <= 0
-JA L4
-;Get characters from stack and display as decimal number
-MOV AH,02
-MOV CX,BX
-DISP: POP DX
-INT 21H ;Display the character
-LOOP DISP
+; DECIMAL CONVERSION
+    MOV AX, BX
+    MOV BX, 00h
+    MOV CX, 10
+
+DECIMAL:   MOV DX, 00h
+    DIV  CX
+    PUSH DX
+    INC BX
+    CMP AX, 00h
+    JNE DECIMAL
+
+
+;convert digit to ascii
+    MOV CX, BX
+ASCII:    POP DX
+    ADD DL, 30H
+    MOV AH, 02
+    INT 21H
+    LOOP ASCII
 
     MOV AX, 4C00H
     INT 21H

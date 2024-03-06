@@ -1,0 +1,65 @@
+    .MODEL
+    .STACK 32
+    .DATA 
+MAX DB 20
+ACT DB ?
+STRING DB 21 DUP(?)
+NEWLINE DB 0DH, 0AH, '$'
+    .CODE
+MAIN PROC FAR
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV AH, 0Ah
+    LEA DX, MAX
+    INT 21h
+
+    MOV AH, 09H
+    LEA DX, NEWLINE
+    INT 21H
+
+    MOV DX, 00H
+    MOV CL, ACT
+    MOV SI, 0
+    MOV CH, 00H
+
+NEXT: MOV AL, STRING[SI]
+    CMP AL, 'A'
+    JE VOW
+    CMP AL, 'E'
+    JE VOW
+    CMP AL, 'I'
+    JE VOW
+    CMP AL, 'O'
+    JE VOW
+    CMP AL, 'U'
+    JE VOW
+    JMP CON
+VOW: INC DX
+CON: INC SI
+    LOOP NEXT
+
+    MOV AX, DX
+    MOV CX, 10
+    MOV BX, 00h
+
+DECIMAL:  MOV DX, 00H
+    DIV CX
+    ADD DX, 30H
+    INC BX
+    PUSH DX
+    CMP AX, 00H
+    JNZ DECIMAL
+
+; PRINT
+    MOV CX, BX
+    MOV AH, 02H
+
+PRINT: POP DX
+    INT 21H
+    LOOP PRINT
+
+    MOV AH, 4CH
+    INT 21H
+MAIN ENDP
+    END MAIN

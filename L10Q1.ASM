@@ -3,25 +3,68 @@ TITLE
     .MODEL SMALL
     .STACK 32
     .DATA
-ASK DB "ENTER THE NUMBER (N): $"
-RESULT DB "THE SUM OF NUMBERS FROM 1 TO N IS: $"
+
+NUM DB 0
+
 NEWLINE DB 0AH, '$'
 ;---------------------------
     .CODE
-
+MAIN PROC FAR
     MOV AX,@DATA
     MOV DS,AX
 
-    MOV AH,01
+
+
+NEXT: MOV AH,01
+    INT 21H
+    CMP AL, 0DH   ;BREAK IF ENTER IS PRESSED
+    JE L2 
+    SUB AL,30H ;ASCII TO DIGIT
+    PUSH AX     ; 3 TO STACK
+    MOV AL, 10
+    MUL NUM
+    MOV NUM, AL
+    POP AX
+    ADD NUM, AL
+    JMP NEXT    ; NUMBER NEXT NUM IN
+
+L2:    LEA DX, NEWLINE ; DISPLAY NEW LINE
+    MOV AH, 09H
     INT 21H
 
-    SUB AL,30H ;ASCII TO DIGIT
-    MOV CX, AX
+    MOV CL , NUM
+    MOV CH, 00H;
 
-    MOV AX, 0000H
-SUM: ADD AX, CX
-    DAA
-    LOOP SUM
+    MOV AX, 00h
+    MOV BX, 01h
+
+ADD_LOOP: ADD AX, BX
+    INC BX
+    LOOP ADD_LOOP
+
+; TO DECIMAL CONVERSION
+    MOV BX, 00H
+    MOV CX, 10
+LP: MOV DX, 00H
+    DIV CX
+    PUSH DX
+    INC BX
+    CMP AX, 00
+    JNZ LP
+
+    MOV CX, BX
+L1:  MOV AH, 02H
+    POP DX
+    ADD DL, 30H
+    INT 21H
+    LOOP L1
+
+    MOV AH, 4CH
+    INT 21H
+
+MAIN ENDP
+    END MAIN
+
 
 
 
