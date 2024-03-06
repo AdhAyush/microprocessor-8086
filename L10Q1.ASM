@@ -1,4 +1,3 @@
-TITLE
 ;--------------------------
     .MODEL SMALL
     .STACK 32

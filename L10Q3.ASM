@@ -1,9 +1,9 @@
     .MODEL
     .STACK 32
     .DATA
-MAX DB 101
+MAX DB 20
 ACT DB ?
-STRING DB 101 DUP('$')
+STRING DB 21 DUP('$')
 NEWLINE DB 0DH, 0AH, '$'
 
     .CODE 
